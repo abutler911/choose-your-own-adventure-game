@@ -11,8 +11,10 @@ const flash = require("connect-flash");
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
+
 // Import User model
 const User = require("./src/models/user");
+
 // Create Express app
 const app = express();
 
@@ -46,32 +48,30 @@ app.use(passport.session());
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "username", // Assuming "username" is the unique identifier
+      usernameField: "username",
     },
-    (username, password, done) => {
-      // Find the user by username
-      User.findOne({ username: username })
-        .exec()
-        .then((user) => {
-          if (!user) {
-            return done(null, false, {
-              message: "Invalid username or password",
-            });
-          }
-          // Compare the password using bcrypt
-          bcrypt.compare(password, user.password, (err, result) => {
-            if (err) {
-              return done(err);
-            }
-            if (!result) {
-              return done(null, false, {
-                message: "Invalid username or password",
-              });
-            }
-            return done(null, user);
+    async (username, password, done) => {
+      try {
+        // Find the user by username
+        const user = await User.findOne({ username });
+        if (!user) {
+          return done(null, false, {
+            message: "Invalid username or password",
           });
-        })
-        .catch((err) => done(err));
+        }
+
+        // Compare the password using bcrypt
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+          return done(null, false, {
+            message: "Invalid username or password",
+          });
+        }
+
+        return done(null, user);
+      } catch (error) {
+        return done(error);
+      }
     }
   )
 );
@@ -104,7 +104,6 @@ app.set("layout", "layouts/layout");
 
 // Routes
 app.get("/", (req, res) => {
-  // Render the index.ejs template
   res.render("index", { layout: "layouts/layout" });
 });
 
@@ -112,48 +111,36 @@ app.get("/register", (req, res) => {
   res.render("register", { layout: "layouts/layout" });
 });
 
-app.post("/register", (req, res) => {
-  const { firstName, lastName, username, email, password } = req.body;
+app.post("/register", async (req, res) => {
+  try {
+    const { firstName, lastName, username, email, password } = req.body;
 
-  // Generate a salt with a desired number of rounds
-  const saltRounds = 10;
-  bcrypt.genSalt(saltRounds, (err, salt) => {
-    if (err) {
-      console.error("Error generating salt:", err);
-      return res.redirect("/register");
-    }
+    // Generate a salt with a desired number of rounds
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
 
     // Hash the password using the generated salt
-    bcrypt.hash(password, salt, (err, hashedPassword) => {
-      if (err) {
-        console.error("Error hashing password:", err);
-        return res.redirect("/register");
-      }
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-      // Create a new user instance with the salted and hashed password
-      const newUser = new User({
-        firstName,
-        lastName,
-        username,
-        email,
-        password: hashedPassword,
-      });
-
-      // Save the user to the database
-      newUser
-        .save()
-        .then(() => {
-          console.log("User saved to the database");
-          req.flash("success", "User registered successfully!");
-          res.redirect("/login");
-        })
-        .catch((error) => {
-          console.error("Error saving user:", error);
-          req.flash("error", "Failed to register user.");
-          res.redirect("/register");
-        });
+    // Create a new user instance with the salted and hashed password
+    const newUser = new User({
+      firstName,
+      lastName,
+      username,
+      email,
+      password: hashedPassword,
     });
-  });
+
+    // Save the user to the database
+    await newUser.save();
+    console.log("User saved to the database");
+    req.flash("success", "User registered successfully!");
+    res.redirect("/login");
+  } catch (error) {
+    console.error("Error saving user:", error);
+    req.flash("error", "Failed to register user.");
+    res.redirect("/register");
+  }
 });
 
 // Login route
@@ -176,7 +163,6 @@ app.post(
 app.get("/dashboard", (req, res) => {
   const user = req.user;
   const username = user.username;
-
   res.render("dashboard", { username });
 });
 
