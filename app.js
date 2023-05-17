@@ -11,6 +11,7 @@ const app = express();
 // Configure middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static(__dirname + "/src/public"));
 
 // Set EJS as the template engine
 app.set("view engine", "ejs");
