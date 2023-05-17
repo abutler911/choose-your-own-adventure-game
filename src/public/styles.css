@@ -15,23 +15,49 @@ p {
     line-height: 1.5;
 }
 
-.new-character {
+#register-btn {
     display: inline-block;
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
     background-color: #53917E;
-    color: #000;
+    color: #fff;
     font-size: 1.5rem;
     cursor: pointer;
     text-decoration: none;
     margin-top: 40px;
     font-weight: 700;
+    width: 200px;
 }
 
-.new-character:hover {
-    background-color: #254139;
+#login-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: transparent;
+    color: #53917E;
+    font-size: 1.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 40px;
+    font-weight: 700;
+    width: 200px;
+    border: 1px solid #fff;
+}
+
+#login-btn:hover {
+    background-color: #53917E;
     color: #fff;
+    border: none;
+    transition: 0.3s ease-in-out;
+}
+
+#register-btn:hover {
+    background-color: transparent;
+    color: #53917e;
+    border: 1px solid #fff;
+    transition: 0.3s ease-in-out;
 }
 
 .overlay {
