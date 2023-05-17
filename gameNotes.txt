@@ -1,0 +1,23 @@
+    Strength vs. Agility:
+        Strength: Increases physical power and damage dealt in combat.
+        Agility: Enhances speed, reflexes, and dexterity for evasion and accuracy.
+
+    Stamina vs. Mana:
+        Stamina: Boosts endurance and allows for longer physical activities.
+        Mana: Enhances magical abilities and spellcasting capacity.
+
+    Intelligence vs. Wisdom:
+        Intelligence: Enhances problem-solving skills, memory, and knowledge acquisition.
+        Wisdom: Heightens intuition, perception, and understanding of the world.
+
+    Charisma vs. Stealth:
+        Charisma: Increases persuasion and influence over others.
+        Stealth: Enhances sneaking, hiding, and remaining undetected.
+
+    Resilience vs. Luck:
+        Resilience: Increases resistance to damage and negative effects.
+        Luck: Enhances chances of critical hits, finding rare items, and favorable outcomes.
+
+    Perception vs. Endurance:
+        Perception: Improves awareness, detection of hidden objects, and traps.
+        Endurance: Boosts resilience to fatigue, environmental conditions, and physical strain.
