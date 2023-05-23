@@ -1,0 +1,51 @@
+<h1>Create Your Character</h1>
+
+<div class="container">
+  <h1>Create Character</h1>
+  <form action="/build-character" method="POST">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" id="name" name="name" required />
+    </div>
+    <div class="mb-3">
+      <label for="species" class="form-label">Species</label>
+      <input
+        type="text"
+        class="form-control"
+        id="species"
+        name="species"
+        required
+      />
+    </div>
+    <div>
+      <h2>Questionnaire</h2>
+      <!-- Add your questionnaire here. The values of the radio buttons will be the trait names -->
+      <p>Do you prefer strength or agility?</p>
+      <input
+        type="radio"
+        id="strength"
+        name="strength-agility"
+        value="strength"
+      />
+      <label for="strength">Strength</label><br />
+      <input
+        type="radio"
+        id="agility"
+        name="strength-agility"
+        value="agility"
+      />
+      <label for="agility">Agility</label><br />
+      <!-- Repeat for all pairs of traits -->
+    </div>
+    <div>
+      <h2>Choose Class</h2>
+      <!-- The value of each option will be the name of the class -->
+      <select name="class" id="class">
+        <option value="warrior">Warrior</option>
+        <option value="mage">Mage</option>
+        <!-- Add more options as needed -->
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Character</button>
+  </form>
+</div>

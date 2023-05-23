@@ -19,6 +19,7 @@ const User = require("./src/models/user");
 const app = express();
 
 // Connect to MongoDB
+console.log("connecting to database...");
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
@@ -51,6 +52,7 @@ passport.use(
       usernameField: "username",
     },
     async (username, password, done) => {
+      console.log(`Authenticating user: ${username}`);
       try {
         // Find the user by username
         const user = await User.findOne({ username });
@@ -104,6 +106,7 @@ app.set("layout", "layouts/layout");
 
 // Routes
 app.get("/", (req, res) => {
+  console.log("received request for the slash route...");
   res.render("index", { layout: "layouts/layout" });
 });
 
@@ -164,6 +167,16 @@ app.get("/dashboard", (req, res) => {
   const user = req.user;
   const username = user.username;
   res.render("dashboard", { username });
+});
+
+app.get("/build-character", (req, res) => {
+  if (!req.user) {
+    // If user is not logged in, redirect to login page
+    return res.redirect("/login");
+  }
+
+  // If user is logged in, render the build-character page
+  res.render("build-character", { layout: "layouts/layout" });
 });
 
 // Start the server
