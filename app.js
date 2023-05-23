@@ -7,6 +7,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const session = require("express-session");
 const flash = require("connect-flash");
+const Character = require("./src/models/character");
 
 dotenv.config();
 
@@ -167,6 +168,16 @@ app.get("/dashboard", (req, res) => {
   const user = req.user;
   const username = user.username;
   res.render("dashboard", { username });
+});
+
+app.get("/characters", async (req, res) => {
+  try {
+    const characters = await Character.find().exec();
+    res.json(characters);
+  } catch (error) {
+    console.error("Error retrieving characters:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 app.get("/build-character", (req, res) => {

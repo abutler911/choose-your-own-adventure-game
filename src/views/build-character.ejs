@@ -8,12 +8,12 @@
       <input type="text" class="form-control" id="name" name="name" required />
     </div>
     <div class="mb-3">
-      <label for="species" class="form-label">Species</label>
+      <label for="class" class="form-label">Class</label>
       <input
         type="text"
         class="form-control"
-        id="species"
-        name="species"
+        id="class"
+        name="class"
         required
       />
     </div>
@@ -39,13 +39,85 @@
     </div>
     <div>
       <h2>Choose Class</h2>
-      <!-- The value of each option will be the name of the class -->
-      <select name="class" id="class">
-        <option value="warrior">Warrior</option>
-        <option value="mage">Mage</option>
-        <!-- Add more options as needed -->
+      <select name="class" id="classSelect">
+        <!-- Options will be dynamically populated by JavaScript -->
       </select>
     </div>
     <button type="submit" class="btn btn-primary">Create Character</button>
   </form>
+
+  <div class="chart-container">
+    <canvas id="attributeChart"></canvas>
+  </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
+<script>
+  let attributeChartInstance = null;
+
+  // Fetch character data from the API endpoint
+  fetch("/characters")
+    .then((response) => response.json())
+    .then((data) => {
+      // Get the select element
+      const classSelect = document.getElementById("classSelect");
+
+      // Create options for each character class
+      data.forEach((character) => {
+        const option = document.createElement("option");
+        option.value = character.class;
+        option.textContent = character.class;
+        classSelect.appendChild(option);
+      });
+
+      // Handle class selection change event
+      classSelect.addEventListener("change", (event) => {
+        const selectedClass = event.target.value;
+
+        // Find the selected class data
+        const selectedClassData = data.find(
+          (character) => character.class === selectedClass
+        );
+
+        // Get the attribute values
+        const attributes = Object.values(selectedClassData.attributes);
+
+        // Destroy the previous chart instance if exists
+        if (attributeChartInstance) {
+          attributeChartInstance.destroy();
+        }
+
+        // Render the bar graph
+        renderBarGraph(attributes, Object.keys(selectedClassData.attributes));
+      });
+    })
+    .catch((error) => console.error("Error fetching character data:", error));
+
+  // Function to render the bar graph
+  function renderBarGraph(attributes, attributeNames) {
+    const attributeChart = document
+      .getElementById("attributeChart")
+      .getContext("2d");
+
+    attributeChartInstance = new Chart(attributeChart, {
+      type: "bar",
+      data: {
+        labels: attributeNames,
+        datasets: [
+          {
+            label: "Attributes",
+            data: attributes,
+            backgroundColor: "rgba(75, 192, 192, 0.8)",
+          },
+        ],
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  }
+</script>
