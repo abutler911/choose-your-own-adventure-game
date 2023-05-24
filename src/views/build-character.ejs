@@ -147,4 +147,27 @@
     // Update total points display
     document.getElementById("totalPoints").textContent = totalPoints;
   }
+
+  document.querySelector("form").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const sliders = document.querySelectorAll(".attribute-slider");
+
+    sliders.forEach((slider) => {
+      formData.append(slider.previousElementSibling.textContent, slider.value);
+    });
+
+    // Now, you can send formData to your server
+    fetch("/build-character", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => {
+        // handle response
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  });
 </script>

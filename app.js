@@ -190,6 +190,41 @@ app.get("/build-character", (req, res) => {
   res.render("build-character", { layout: "layouts/layout" });
 });
 
+app.post("/build-character", async (req, res) => {
+  // Input validation can be performed here
+
+  // Find the base character
+  const baseCharacter = await Character.findOne({ class: req.body.class });
+
+  // Make a copy of the base character's attributes
+  console.log(baseCharacter); // What does this output?
+  const newAttributes = { ...baseCharacter.attributes };
+
+  // Add the extra points from the form to the appropriate attributes
+  for (let attribute in newAttributes) {
+    newAttributes[attribute] += parseInt(req.body[attribute]);
+  }
+
+  // Create the new character
+  const newCharacter = new Character({
+    name: req.body.name,
+    class: req.body.class,
+    attributes: newAttributes,
+    user: req.body.userId,
+  });
+
+  // Save the new character
+  await newCharacter.save();
+
+  // Find the user and add the character to their profile
+  const user = await User.findById(req.body.userId);
+  user.character = newCharacter._id;
+  await user.save();
+
+  // Send a success response
+  res.status(200).json({ message: "Character created successfully" });
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
